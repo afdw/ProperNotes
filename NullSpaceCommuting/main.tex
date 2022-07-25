@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage[a4paper, total={19cm, 26cm}]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{pifont}
+\usepackage{tabu}
+\usepackage[pdfusetitle]{hyperref}
+\usepackage[dvipsnames, table]{xcolor}
+\usepackage{pgfplots}
+\usepackage{mathtools}
+\usepackage{minted}
+\pgfplotsset{compat = 1.17}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\arsinh}{arsinh}
+\DeclareMathOperator{\arcosh}{arcosh}
+\DeclareMathOperator{\artanh}{artanh}
+\DeclareMathOperator{\DL}{DL}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\nullspace}{null}
+\DeclareMathOperator{\range}{range}
+\renewcommand{\vec}{\overrightarrow}
+\newcommand\restr[2]{{\left.\kern-\nulldelimiterspace #1 \vphantom{\big|} \right|_{#2}}}
+\newcommand*\centermathcell[1]{\omit\hfil$\displaystyle#1$\hfil\ignorespaces}
+\theoremstyle{plain}\newtheorem{theorem}{Theorem}
+\theoremstyle{plain}\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}{Remark}
+\newcommand{\backslashbackslash}{\\}
+\author{Anton Danilkin}
+\title{Null space decomposition for commuting operators}
+\begin{document}
+\maketitle
+
+Here are some results I do not remember seeing in textbooks (except for \autoref{luS0oah5}), but which seem to be really useful.
+
+\begin{theorem}\label{luS0oah5}
+    Let $V$ be a vector space and $S, T \in \mathcal{L}(V)$ such that $S T = T S$. Then $S (\nullspace(T)) \subseteq \nullspace(T)$ and $S (\range(T)) \subseteq \range(T)$.
+\end{theorem}
+\begin{proof}
+    Let $v \in S (\nullspace(T))$; then $v = S(u)$ for some $u \in V$ such that $T(u) = 0$. We have $T(v) = T(S(u)) = S(T(u)) = 0$, so $v \in \nullspace(T)$.
+
+    Let $v \in S (\range(T))$; then $v = S(T(u))$ for some $u \in V$. We have $v = T(S(U))$, so $v \in \range(T)$.
+\end{proof}
+
+\begin{theorem}\label{aow7aShu}
+    Let $V$ be a finite-dimensional vector space and $S, T \in \mathcal{L}(V)$ such that $S T = T S$ and $\nullspace(S) \cap \nullspace(T) = 0$. Then $S (\nullspace(T)) = \nullspace(T)$.
+\end{theorem}
+\begin{proof}
+    By \autoref{luS0oah5} we already know that $S (\nullspace(T)) \subseteq \nullspace(T)$. We can see that:
+    \begin{equation*}
+        \begin{aligned}
+            S(\nullspace(T)) & = \{ S(v) \mid v \in V, T(v) = 0 \} \\
+                             & = \range(\restr{S}{\nullspace{T}})  \\
+        \end{aligned}
+    \end{equation*}
+    And:
+    \begin{equation*}
+        \begin{aligned}
+            0 & = \nullspace(S) \cap \nullspace(T)           \\
+              & = \{ v | v \in V, S(v) = 0 \land T(v) = 0 \} \\
+              & = \nullspace(\restr{S}{\nullspace{T}})       \\
+        \end{aligned}
+    \end{equation*}
+    But:
+    \begin{equation*}
+        \dim(\range(\restr{S}{\nullspace{T}})) + \dim(\nullspace(\restr{S}{\nullspace{T}})) = \dim(\nullspace{T})
+    \end{equation*}
+    So $\dim(S(\nullspace(T))) = 0 + \dim(\nullspace(T))$ and $S (\nullspace(T)) = \nullspace(T)$.
+\end{proof}
+
+\begin{theorem}\label{fahch9Wu}
+    Let $V$ be a finite-dimensional vector space and $S, T \in \mathcal{L}(V)$ such that $S T = T S$ and $\nullspace(S) \cap \nullspace(T) = 0$. Then $\nullspace(\restr{T}{\range{S}}) = \nullspace(T)$.
+\end{theorem}
+\begin{proof}
+    The direction $\nullspace(\restr{T}{\range{S}}) \subseteq \nullspace(T)$ is easy. Using \autoref{aow7aShu}:
+    \begin{equation*}
+        \begin{aligned}
+            \nullspace(T) & = S (\nullspace(T))                            \\
+                          & = \{ S(v) \mid v \in V, T(v) = 0 \}            \\
+                          & \subseteq \{ S(v) \mid v \in V, S(T(v)) = 0 \} \\
+                          & = \{ S(v) \mid v \in V, T(S(v)) = 0 \}         \\
+                          & = \nullspace(\restr{T}{\range{S}})             \\
+        \end{aligned}
+    \end{equation*}
+\end{proof}
+
+\begin{theorem}\label{too2eiGo}
+    Let $V$ be a finite-dimensional vector space and $S, T \in \mathcal{L}(V)$ such that $S T = T S$ and $\nullspace(S) \cap \nullspace(T) = 0$. Then $\nullspace(S) \oplus \nullspace(T) = \nullspace(S T)$.
+\end{theorem}
+\begin{proof}
+    The direction $\nullspace(S) \oplus \nullspace(T) \subseteq \nullspace(S T)$ is easy. We can see that:
+    \begin{equation*}
+        \begin{aligned}
+            \range(\restr{T}{\range{S}}) & = \{ T(S(v)) \mid v \in V \} \\
+                                         & = \{ S(T(v)) \mid v \in V \} \\
+                                         & = \range(S T)                \\
+        \end{aligned}
+    \end{equation*}
+    And $\nullspace(\restr{T}{\range{S}}) = \nullspace(T)$ by \autoref{fahch9Wu}. We have:
+    \begin{equation*}
+        \begin{aligned}
+            \dim(\nullspace(S) \oplus \nullspace(T))
+             & = \dim(\nullspace(S)) + \dim(\nullspace(T))                                                                   \\
+             & = (\dim(V) - \dim(\range(S))) + (\dim(V) - \dim(\range(T)))                                                   \\
+             & = 2 \dim(V) - \dim(\range(S)) - \dim(\range(T))                                                               \\
+             & = 2 \dim(V) - (\dim(\range(\restr{T}{\range{S}})) + \dim(\nullspace(\restr{T}{\range{S}}))) - \dim(\range(T)) \\
+             & = 2 \dim(V) - (\dim(\range(S T)) + \dim(\nullspace(T))) - \dim(\range(T))                                     \\
+             & = (\dim(V) - \dim(\range(S T))) + (\dim(V) - \dim(\range(T)) - \dim(\nullspace(T)))                           \\
+             & = \dim(\nullspace(S T))                                                                                       \\
+        \end{aligned}
+    \end{equation*}
+    And so $\nullspace(S) \oplus \nullspace(T) = \nullspace(S T)$.
+\end{proof}
+
+These properties (here \autoref{too2eiGo} is taken) could by tested randomly and computationally using a code like the following (using \href{https://github.com/afdw/matrix-operations/blob/main/main.py}{my library for matrix operations}):
+
+\begin{minted}{python}
+from random import randint
+
+for _ in range(100000000):
+    S = Matrix([[randint(-4, 4), randint(-4, 4), randint(-4, 4)],
+                [0,              randint(-4, 4), randint(-4, 4)],
+                [0,              0,              randint(-4, 4)]])
+    T = Matrix([[randint(-4, 4), randint(-4, 4), randint(-4, 4)],
+                [0,              randint(-4, 4), randint(-4, 4)],
+                [0,              0,              randint(-4, 4)]])
+    if S * T == T * S and \
+       S.null().append_right(T.null()).rang() == S.null().m + T.null().m != (S * T).null().m:
+        print(S)
+        print(T)
+\end{minted}
+
+As the linear operators we consider commute, we should always be able to find a common base where the matrices of these operators are triangular, so we only check matrices of this form. Also, coefficients are taken to be fairly small, as non-invertible matrices are rare.
+\end{document}
